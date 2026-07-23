@@ -26,7 +26,7 @@ public class Voto {
     @Column(name = "cpf_associado", nullable = false, length = 11)
     private String cpfAssociado;
     
-    @Column(nullable = false)
+    @Column(name = "voto_tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private Choice voto;
     

@@ -868,7 +868,7 @@
     <script>
         // ==================== API CONFIGURATION ====================
         const API_BASE_URL = 'http://localhost:8080/api/v1';
-        
+
         // ==================== DATA STORE ====================
         let store = {
             pautas: [],
@@ -887,15 +887,15 @@
                     ...options.headers
                 }
             };
-            
+
             try {
                 const response = await fetch(url, config);
                 const data = await response.json();
-                
+
                 if (!response.ok) {
                     throw new Error(data.message || data.error || 'Erro na requisição');
                 }
-                
+
                 return data;
             } catch (error) {
                 console.error(`API Error (${endpoint}):`, error);
@@ -962,9 +962,9 @@
                 const backendId = pautaId.replace('pauta-', '');
                 const response = await apiRequest(`/pautas/${backendId}/votos`, {
                     method: 'POST',
-                    body: JSON.stringify({ 
-                        cpfAssociado: cpf, 
-                        voto: vote 
+                    body: JSON.stringify({
+                        cpfAssociado: cpf,
+                        voto: vote
                     })
                 });
                 return response;
@@ -1066,7 +1066,7 @@
             try {
                 const pautas = await fetchPautas();
                 store.pautas = pautas;
-                
+
                 // Load sessions for each pauta
                 for (const pauta of pautas) {
                     try {
@@ -1083,7 +1083,7 @@
                         // Session may not exist yet
                     }
                 }
-                
+
                 // Update pauta status based on session
                 store.pautas.forEach(pauta => {
                     const session = store.sessions[pauta.id];
@@ -1095,7 +1095,7 @@
                         }
                     }
                 });
-                
+
             } catch (error) {
                 console.error('Erro ao carregar pautas:', error);
             }
@@ -1104,7 +1104,7 @@
         async function renderPautas() {
             // Try to load from backend first
             await loadPautasFromBackend();
-            
+
             const container = document.getElementById('pautasList');
             if (store.pautas.length === 0) {
                 container.innerHTML = `
@@ -1123,9 +1123,9 @@
                 const session = store.sessions[pauta.id];
                 const isOpen = session && (session.aberta || isSessionOpen(session));
                 const isClosed = pauta.status === 'closed' || (session && session.closedAt);
-                const statusBadge = isOpen ? 
+                const statusBadge = isOpen ?
                     '<span class="badge badge-open"><span class="status-dot open"></span> Aberta</span>' :
-                    isClosed ? 
+                    isClosed ?
                     '<span class="badge badge-closed"><span class="status-dot closed"></span> Encerrada</span>' :
                     '<span class="badge badge-pending">Pendente</span>';
 
@@ -1134,7 +1134,7 @@
                 let actions = '';
                 if (isOpen) {
                     const userVoted = store.votos[pauta.id] && store.votos[pauta.id][store.currentUser];
-                    actions = userVoted ? 
+                    actions = userVoted ?
                         `<span class="voted-badge">✓ Você já votou</span>` :
                         `<button class="btn btn-primary btn-sm" onclick="switchTab('votacao'); showPautaVote('${pauta.id}')">Votar Agora</button>`;
                 } else if (!isClosed) {
@@ -1179,13 +1179,13 @@
 
             try {
                 const response = await createPautaApi(title, description);
-                
+
                 document.getElementById('pautaTitle').value = '';
                 document.getElementById('pautaDescription').value = '';
                 document.getElementById('pautaDuration').value = '60';
                 closeModal('modalNewPauta');
                 showToast('Pauta criada com sucesso!', 'success');
-                
+
                 // Reload pautas from backend
                 await renderPautas();
             } catch (error) {
@@ -1195,12 +1195,12 @@
 
         async function openSession() {
             const duration = parseInt(document.getElementById('sessionDuration').value) || 60;
-            
+
             if (!currentSessionPauta) return;
 
             try {
                 const response = await openSessionApi(currentSessionPauta, duration);
-                
+
                 // Update local session state
                 store.sessions[currentSessionPauta] = {
                     openedAt: response.dataAbertura,
@@ -1208,7 +1208,7 @@
                     closedAt: null,
                     aberta: true
                 };
-                
+
                 // Update pauta status
                 const pauta = store.pautas.find(p => p.id === currentSessionPauta);
                 if (pauta) {
@@ -1229,7 +1229,7 @@
         // ==================== VOTAÇÃO ====================
         async function renderVotacao() {
             const container = document.getElementById('votacaoContent');
-            
+
             // Filter pautas with open sessions
             const openSessions = store.pautas.filter(p => {
                 const session = store.sessions[p.id];
@@ -1308,7 +1308,7 @@
 
         async function registerVote(pautaId, vote) {
             const cpf = document.getElementById('cpfInput').value.replace(/\D/g, '');
-            
+
             if (cpf.length !== 11) {
                 showToast('CPF inválido. Informe 11 dígitos.', 'error');
                 return;
@@ -1317,7 +1317,7 @@
             try {
                 // Register vote in backend
                 const response = await registerVoteApi(pautaId, cpf, vote);
-                
+
                 // Update local state
                 if (!store.votos[pautaId]) {
                     store.votos[pautaId] = {};
@@ -1338,15 +1338,15 @@
         // ==================== RESULTADOS ====================
         async function renderResultados() {
             const container = document.getElementById('resultadosContent');
-            
+
             // Try to fetch results from backend for each pauta
             const pautasWithResults = [];
-            
+
             for (const pauta of store.pautas) {
                 const session = store.sessions[pauta.id];
                 const isOpen = session && (session.aberta || isSessionOpen(session));
                 const isClosed = pauta.status === 'closed' || (session && session.closedAt);
-                
+
                 if (isOpen || isClosed) {
                     try {
                         // Try to get result from backend
@@ -1397,7 +1397,7 @@
                 const { sim, nao, total } = pauta.result;
                 const simPercent = total > 0 ? Math.round((sim / total) * 100) : 0;
                 const naoPercent = total > 0 ? Math.round((nao / total) * 100) : 0;
-                const statusBadge = pauta.isOpen ? 
+                const statusBadge = pauta.isOpen ?
                     '<span class="badge badge-open">Em andamento</span>' :
                     '<span class="badge badge-closed">Encerrada</span>';
 
@@ -1501,7 +1501,7 @@
 
         async function validateCPF() {
             const cpf = document.getElementById('cpfInput').value.replace(/\D/g, '');
-            
+
             if (cpf.length !== 11) {
                 showToast('CPF inválido. Informe 11 dígitos.', 'error');
                 return;
@@ -1517,7 +1517,7 @@
                 }
 
                 showToast('CPF validado com sucesso!', 'success');
-                
+
                 // Register the vote
                 await registerVote(currentVotePauta, currentVote);
             } catch (error) {
@@ -1539,7 +1539,7 @@
                         const timerEl = document.getElementById(`timer-${pauta.id}`);
                         const timerVoteEl = document.getElementById(`timer-vote-${pauta.id}`);
                         const countdown = getCountdown(session);
-                        
+
                         if (timerEl) {
                             const countdownEl = timerEl.querySelector('.countdown');
                             if (countdownEl) countdownEl.textContent = countdown;
@@ -1552,13 +1552,13 @@
                         // Session just expired
                         session.closedAt = new Date().toISOString();
                         pauta.status = 'closed';
-                        
+
                         // Calculate result
                         const votes = store.votos[pauta.id] || {};
                         const sim = Object.values(votes).filter(v => v === 'SIM').length;
                         const nao = Object.values(votes).filter(v => v === 'NAO').length;
                         pauta.result = { sim, nao };
-                        
+
                         saveStore();
                         renderPautas();
                         renderVotacao();
@@ -1574,7 +1574,7 @@
             if (localData) {
                 store = localData;
             }
-            
+
             // Load pautas from backend (will show error toast if backend is not available)
             try {
                 await renderPautas();
@@ -1585,7 +1585,7 @@
                     renderPautas();
                 }
             }
-            
+
             startTimerUpdates();
         }
 
