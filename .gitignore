@@ -1,1 +1,37 @@
-(frontend/index.html is a source file, and there are no build artifacts, dependencies, or temp files in the changes)
+--- .gitignore (原始)
+
+
++++ .gitignore (修改后)
+```
+# Java/Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Databases
+*.mv.db
+
+# Logs
+*.log
+backend/logs/
+
+# Environment
+.env
+.env.local
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# OS
+.DS_Store
+Thumbs.db
+```
