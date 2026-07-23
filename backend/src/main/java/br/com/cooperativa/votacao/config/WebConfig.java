@@ -1,7 +1,3 @@
---- backend/src/main/java/br/com/cooperativa/votacao/config/WebConfig.java (原始)
-
-
-+++ backend/src/main/java/br/com/cooperativa/votacao/config/WebConfig.java (修改后)
 package br.com.cooperativa.votacao.config;
 
 import org.springframework.context.annotation.Configuration;

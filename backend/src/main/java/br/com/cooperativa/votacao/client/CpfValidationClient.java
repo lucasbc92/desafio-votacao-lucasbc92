@@ -59,6 +59,7 @@ public class CpfValidationClient {
         }
         
         // Verifica se todos os dígitos são iguais (CPF inválido)
-        return cpf.chars().distinct().count() != 1;
+        long distinctCpfCharsCount = cpf.chars().distinct().count();
+        return distinctCpfCharsCount != 1;
     }
 }

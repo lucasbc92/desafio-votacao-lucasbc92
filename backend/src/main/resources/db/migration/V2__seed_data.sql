@@ -1,10 +1,3 @@
---- backend/src/main/resources/db/migration/V2__seed_data.sql (原始)
-
-
-+++ backend/src/main/resources/db/migration/V2__seed_data.sql (修改后)
--- Seed inicial: Dados de exemplo para testes e desenvolvimento
--- Versão 1.0.0
-
 -- Inserindo pautas de exemplo
 INSERT INTO pauta (titulo, descricao, data_criacao, ativo) VALUES
 ('Assembleia Geral Extraordinária - Reforma do Estatuto',

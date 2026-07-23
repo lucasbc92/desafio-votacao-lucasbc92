@@ -1,10 +1,3 @@
---- backend/src/main/resources/db/migration/V1__create_tables.sql (原始)
-
-
-+++ backend/src/main/resources/db/migration/V1__create_tables.sql (修改后)
--- Migration inicial: Criação das tabelas do sistema de votação
--- Versão 1.0.0
-
 CREATE TABLE IF NOT EXISTS pauta (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
